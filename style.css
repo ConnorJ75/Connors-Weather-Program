@@ -1,0 +1,47 @@
+#header{
+    font-size: 35px;
+}
+#border{
+    border-bottom: 2px solid grey;
+    margin: 10px;
+}
+#parentContainer{
+    display:flex;
+}
+#leftMenu{
+    width:30%; 
+    margin-left: 1%;
+    justify-content: center; 
+    text-align: center;
+}
+#rightMenu{
+    width:60%;
+    margin: 5%;
+}
+#currentInfo{
+    text-align: center;
+    border: 2px solid grey;
+}
+#fiveDayWeather{
+    margin:1%;
+}
+#cardContainer{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.btn-primary{
+    display:block; 
+    margin-left: 5px;
+}
+.btn-secondary{
+    display:block; 
+    margin: 4px;
+    margin-left:8px;
+}
+.card{
+    margin: 3px;
+    width:18%;
+    min-width: 140px;
+    font-size: 16px;
+}
