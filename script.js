@@ -1,19 +1,24 @@
 //Note: to use the api, you need to get rid of the squigly brackets in order to use the apID
 //one working url looks like 
 //https://api.openweathermap.org/data/2.5/weather?q=London,uk&APPID=bfcf3c1f54781a5d45ad618d1c8a4da9
+var leftMenu = document.getElementById("leftMenu");
 var searchBox = document.getElementById("searchBox");
 var searchButton = document.getElementById("searchButton");
 var currentInfo = document.getElementById("currentInfo");
 var weatherCardsContainer = document.getElementById("fiveDayWeather");
 var keyAPI = "bfcf3c1f54781a5d45ad618d1c8a4da9";
-var city;
+var city = "";
+var quick = false;
 
 function getCurrentWeather(){
-    if (searchBox.value !== ""){
-        city = searchBox.value;
+    if (searchBox.value !== "" || quick){
+        if (!quick){
+            city = searchBox.value;
+        }
         fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${keyAPI}&units=imperial`)
         .then((response) => {
             if (response.ok){
+                getFiveDayForecast();
                 return response.json();
             }
             throw new Error('Something did not work.');
@@ -45,9 +50,8 @@ function getCurrentWeather(){
         .catch((error) => {
             console.log(error)
         });
-        getFiveDayForecast();
     }
-    
+    quick = false;
 }
 
 function getFiveDayForecast(){
@@ -63,8 +67,11 @@ function getFiveDayForecast(){
     fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${keyAPI}&units=imperial`)
     .then((response) => {
         if (response.ok){
+            addHistoryButton(city);
             return response.json();
         }
+        currentInfo.textContent = "";
+        weatherCardsContainer.textContent = "";
         throw new Error('Could not find location.');
     })
     .then(function (data) {
@@ -89,10 +96,10 @@ function getFiveDayForecast(){
         }
     })
     .catch((error) => {
-        weatherCardsContainer.textContent = error;
+        userErrorMessage = document.createElement('h2');
+        userErrorMessage.textContent = error;
+        weatherCardsContainer.appendChild(userErrorMessage);
     });
-
-    
 }
 
 //creates a weather card based on parameters passed to it
@@ -121,6 +128,46 @@ function formatDate(date){
     month = date.substring(5,7);
     day = date.substring(8,10);
     return `${month}/${day}/${year}`;
+}
+
+function addHistoryButton(cityName){
+    alreadyInHistory = false;
+    for (i=0; i<localStorage.length;i++){
+        var key = localStorage.key(i);
+        if (key !== null && key.includes("weatherSearch") && key.substring(13).toLowerCase() === cityName.toLowerCase()){
+            alreadyInHistory = true;
+            console.log("FOUND ONE");
+        }
+    }
+    if (!alreadyInHistory){
+        properCityName = cityName.charAt(0).toUpperCase() + cityName.slice(1);
+        localStorage.setItem(`weatherSearch${properCityName}`, " ");
+        var greyButton = document.createElement('a');
+        greyButton.className = "btn btn-secondary";
+        greyButton.innerHTML = properCityName;
+        leftMenu.appendChild(greyButton);
+    }
+}
+
+function loadHistory(){
+    for (i=0;i<localStorage.length;i++){
+        var key = localStorage.key(i);
+        if (key !== null && key.includes("weatherSearch")){
+            var greyButton = document.createElement('a');
+            greyButton.className = "btn btn-secondary";
+            greyButton.onclick = quickSearch;
+            greyButton.innerHTML = key.substring(13);
+            leftMenu.appendChild(greyButton);
+        }
+    }
+}
+
+function quickSearch(){
+    quick = true;
+    console.log("It's test function time.");
+    console.log(`this.innerHTML: ${this.innerHTML}`);
+    city = this.innerHTML;
+    getCurrentWeather();
 }
 
 searchButton.addEventListener("click", getCurrentWeather);
