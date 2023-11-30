@@ -1,5 +1,16 @@
+html{background-color: #ede5f3;}
+
 #header{
     font-size: 35px;
+    color:rgb(60, 60, 60);
+    background-color: #cbb7da;
+}
+#searchBox{
+    background-color: #fbf5ff;
+}
+#searchButton{
+    background-color: #af90c3;
+    border-color: lightgrey;
 }
 #border{
     border-bottom: 2px solid grey;
@@ -7,19 +18,23 @@
 }
 #parentContainer{
     display:flex;
+    background-color: #ede5f3;
 }
 #leftMenu{
     width:30%; 
     margin-left: 1%;
     justify-content: center; 
     text-align: center;
+    
 }
 #rightMenu{
     width:60%;
     margin: 5%;
+    
 }
 #currentInfo{
     text-align: center;
+    background-color: #fbf5ff;
     
 }
 #fiveDayWeather{
@@ -29,7 +44,9 @@
     display: flex;
     flex-wrap: wrap;
 }
-
+.list-group-item{
+    background-color: #fbf5ff;
+}
 .btn-primary{
     display:block; 
     margin-left: 5px;
@@ -38,10 +55,14 @@
     display:block; 
     margin: 4px;
     margin-left:8px;
+    border-color: lightgrey;
+    background-color: #85809e;
 }
 .card{
     margin: 3px;
     width:20%;
     width: 175px;
     font-size: 16px;
+    color: white;
+    background-color: #7d789a;
 }

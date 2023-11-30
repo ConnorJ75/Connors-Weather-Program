@@ -118,7 +118,7 @@ function createWeatherCard(date, icon, temp, wind, humid){
     `<div class="card-header">
         ${date} <img src="https://openweathermap.org/img/wn/${icon}.png" alt="weather-icon">
     </div>
-    <ul class="list-group list-group-flush">
+    <ul id = "cardItems" class="list-group list-group-flush">
     <li class="list-group-item">Temp: ${temp}</li>
     <li class="list-group-item">Wind: ${wind}</li>
     <li class="list-group-item">Humidity: ${humid}</li>
