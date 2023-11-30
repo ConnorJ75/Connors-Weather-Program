@@ -16,7 +16,7 @@ function getCurrentWeather(){
             city = searchBox.value;
         }
         fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${keyAPI}&units=imperial`)
-        .then((response) => {
+        .then(response => {
             if (response.ok){
                 getFiveDayForecast();
                 return response.json();
@@ -25,20 +25,27 @@ function getCurrentWeather(){
         })
         .then(function (data) {
             //creating new elements to put into currentInfo
-            var newTitle = document.createElement('h4');
-            var newTemp = document.createElement('h6');
-            var newWind = document.createElement('h6');
-            var newHumid = document.createElement('h6');
+            var newTitle = document.createElement('h2');
+            //var newIcon = document.createElement('i');
+            var newTemp = document.createElement('h4');
+            var newWind = document.createElement('h4');
+            var newHumid = document.createElement('h4');
+
+            //newIcon.className = "icon";
+            //newIcon.innerHTML = `
+            //<img src="https://openweathermap.org/img/wn/${data.weather[0].icon}.png" alt="weather-icon">`;
 
             //creating a border around currentInfo if search is clicked
             currentInfo.style = "border: 2px solid grey;";
 
             //putting data into their respective places
-            newTitle.textContent = `${data.name} // (Icon): ${data.weather[0].main}`;
+            newTitle.textContent = `${data.name}`;
             newTemp.textContent = `Temp: ${data.main.temp}`;
             newWind.textContent = `Wind: ${data.wind.speed}`;
             newHumid.textContent = `Humidity: ${data.main.humidity}`;
 
+            newTitle.innerHTML += 
+            `<img src="https://openweathermap.org/img/wn/${data.weather[0].icon}.png" alt="weather-icon">`;
             //removing all old elements and then adding newly created elements to currentInfo
             currentInfo.textContent = "";
             currentInfo.appendChild(newTitle);
@@ -90,7 +97,7 @@ function getFiveDayForecast(){
             }
             tempDataItem = dataList[dataIndex];
             weatherCardsContainer.appendChild(createWeatherCard
-                (formatDate(tempDataItem.dt_txt.substring(0,10)),"--",tempDataItem.main.temp,tempDataItem.wind.speed,tempDataItem.main.humidity));
+                (formatDate(tempDataItem.dt_txt.substring(0,10)),tempDataItem.weather[0].icon,tempDataItem.main.temp,tempDataItem.wind.speed,tempDataItem.main.humidity));
             dataIndex++;
             tempTime = data.list[dataIndex].dt_txt.slice(-8);
         }
@@ -109,7 +116,7 @@ function createWeatherCard(date, icon, temp, wind, humid){
     tempCard.style = "display: inline-block;";
     tempCard.innerHTML = 
     `<div class="card-header">
-        ${date} ${icon}
+        ${date} <img src="https://openweathermap.org/img/wn/${icon}.png" alt="weather-icon">
     </div>
     <ul class="list-group list-group-flush">
     <li class="list-group-item">Temp: ${temp}</li>
@@ -132,14 +139,18 @@ function formatDate(date){
 
 function addHistoryButton(cityName){
     alreadyInHistory = false;
+    hButtonCount = 0;
     for (i=0; i<localStorage.length;i++){
         var key = localStorage.key(i);
-        if (key !== null && key.includes("weatherSearch") && key.substring(13).toLowerCase() === cityName.toLowerCase()){
-            alreadyInHistory = true;
-            console.log("FOUND ONE");
+        if (key !== null && key.includes("weatherSearch")){
+            if (key.substring(13).toLowerCase() === cityName.toLowerCase()){
+                alreadyInHistory = true;
+            }
+            hButtonCount++;
         }
     }
-    if (!alreadyInHistory){
+
+    if (!alreadyInHistory && hButtonCount < 10){
         properCityName = cityName.charAt(0).toUpperCase() + cityName.slice(1);
         localStorage.setItem(`weatherSearch${properCityName}`, " ");
         var greyButton = document.createElement('a');
@@ -164,8 +175,6 @@ function loadHistory(){
 
 function quickSearch(){
     quick = true;
-    console.log("It's test function time.");
-    console.log(`this.innerHTML: ${this.innerHTML}`);
     city = this.innerHTML;
     getCurrentWeather();
 }
